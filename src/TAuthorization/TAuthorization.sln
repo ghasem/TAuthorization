@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAuthorization", "TAuthorization\TAuthorization.csproj", "{EC101CC1-7EE2-43E3-9A82-894CEC2893FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAuthorization.Test", "TAuthorization.Test\TAuthorization.Test.csproj", "{207B24D7-38D9-480C-8EC4-D99F778F4B3B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC101CC1-7EE2-43E3-9A82-894CEC2893FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC101CC1-7EE2-43E3-9A82-894CEC2893FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC101CC1-7EE2-43E3-9A82-894CEC2893FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC101CC1-7EE2-43E3-9A82-894CEC2893FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{207B24D7-38D9-480C-8EC4-D99F778F4B3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{207B24D7-38D9-480C-8EC4-D99F778F4B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{207B24D7-38D9-480C-8EC4-D99F778F4B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{207B24D7-38D9-480C-8EC4-D99F778F4B3B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,7 @@
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization.Test\bin\Debug\TosanIdm.Authorization.Test.dll
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization.Test\bin\Debug\TosanIdm.Authorization.Test.pdb
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization.Test\obj\Debug\TosanIdm.Authorization.Test.csprojResolveAssemblyReference.cache
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization.Test\obj\Debug\TosanIdm.Authorization.Test.dll
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization.Test\obj\Debug\TosanIdm.Authorization.Test.pdb
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization.Test\bin\Debug\TAuthorization.dll
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization.Test\bin\Debug\TAuthorization.pdb

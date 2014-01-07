@@ -1,0 +1,10 @@
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization\bin\Debug\TosanIdm.Authorization.dll
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization\bin\Debug\TosanIdm.Authorization.pdb
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization\obj\Debug\TosanIdm.Authorization.dll
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization\obj\Debug\TosanIdm.Authorization.pdb
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization\obj\Debug\TosanIdm.Authorization.csprojResolveAssemblyReference.cache
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization\bin\Debug\System.Web.Http.dll
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization\bin\Debug\System.Net.Http.Formatting.dll
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization\bin\Debug\Newtonsoft.Json.dll
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization\bin\Debug\System.Web.Http.xml
+D:\Projects\Dorna 3\TosanIdm.Authorization\TosanIdm.Authorization\bin\Debug\System.Net.Http.Formatting.xml
