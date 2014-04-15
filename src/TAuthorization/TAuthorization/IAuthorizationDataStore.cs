@@ -5,7 +5,7 @@ namespace TAuthorization
 {
     public interface IAuthorizationDataStore
     {
-        IQueryable<EntityPermission> GetAllEntityPermisions();
+        IQueryable<EntityPermission> Query();
         void Delete(List<EntityPermission> entityPermissions);
         EntityPermission Insert(EntityPermission ep);
         EntityPermission Update(EntityPermission entityPermission);

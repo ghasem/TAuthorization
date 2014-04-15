@@ -16,7 +16,7 @@ namespace TAuthorization
 
         public virtual IQueryable<EntityPermission> Query()
         {
-            return _dataStore.GetAllEntityPermisions();
+            return _dataStore.Query();
         }
 
         public virtual IQueryable<EntityPermission> Query(string actionCategory, string actionName)
@@ -202,7 +202,7 @@ namespace TAuthorization
 
         public virtual void ClearPermissions(Func<EntityPermission, bool> predicate)
         {
-            var entityPermissions = _dataStore.GetAllEntityPermisions().Where(predicate).ToList();
+            var entityPermissions = _dataStore.Query().Where(predicate).ToList();
             _dataStore.Delete(entityPermissions);
         }
 
