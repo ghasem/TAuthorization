@@ -12,7 +12,7 @@ namespace TAuthorization.Test
             _entityPermissions = new List<EntityPermission>();
         }
 
-        public IQueryable<EntityPermission> GetAllEntityPermisions()
+        public IQueryable<EntityPermission> Query()
         {
             return _entityPermissions.AsQueryable();
         }
