@@ -7,7 +7,7 @@ namespace TAuthorization
     {
         IQueryable<EntityPermission> Query();
         void Delete(List<EntityPermission> entityPermissions);
-        EntityPermission Insert(EntityPermission ep);
+        void Insert(EntityPermission ep);
         void Update(EntityPermission entityPermission);
     }
 }

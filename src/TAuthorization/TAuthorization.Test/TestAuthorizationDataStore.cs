@@ -25,13 +25,12 @@ namespace TAuthorization.Test
             }
         }
 
-        public EntityPermission Insert(EntityPermission ep)
+        public void Insert(EntityPermission ep)
         {
             _entityPermissions.Add(ep);
-            return ep;
         }
 
-        public EntityPermission Update(EntityPermission entityPermission)
+        public void Update(EntityPermission entityPermission)
         {
             var permission =
                 _entityPermissions.SingleOrDefault(ep => ep.Id == entityPermission.Id);
@@ -47,8 +46,6 @@ namespace TAuthorization.Test
             {
                 throw new Exception("Entity Permision With this id not found");
             }
-
-            return entityPermission;
         }
     }
 }
