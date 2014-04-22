@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TAuthorization.Test
@@ -202,6 +204,18 @@ namespace TAuthorization.Test
                             ep.ActionName == "ActionName" && ep.ActionCategory == "ActionCategory" &&
                             ep.EntityId == eGuid);
             Assert.AreEqual(permissionCount, 0);
+        }
+
+        [TestMethod]
+        public void CanQueryOverPermissionsForUser()
+        {
+            var authorization = new Authorization(_store);
+            //((ClaimsPrincipal)Thread.CurrentPrincipal)
+            Claim
+            authorization.GrantAccess("ActionCategory", "ActionName", "role1");
+            var permissions = authorization.GetUserPermissions("Username")
+                .Where(ep => ep.ActionName == "ActionName" && ep.ActionCategory == "ActionCategory");
+
         }
     }
 
