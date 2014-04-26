@@ -27,7 +27,7 @@ namespace TAuthorization.Test
 
         public void Insert(EntityPermission ep)
         {
-            if (_entityPermissions.Any(e => e.ActionCategory == ep.ActionCategory && e.ActionName == ep.ActionName && e.Id == ep.Id))
+            if (_entityPermissions.Any(e => e.Action == ep.Action && e.Id == ep.Id))
                 throw new InvalidOperationException("Duplicate EntityPermission.");
             _entityPermissions.Add(ep);
         }
@@ -39,7 +39,7 @@ namespace TAuthorization.Test
             if (permission != null)
             {
                 permission.EntityId = entityPermission.EntityId;
-                permission.ActionName = entityPermission.ActionName;
+                permission.Action = entityPermission.Action;
                 permission.RoleName = entityPermission.RoleName;
                 permission.Permission = entityPermission.Permission;
             }
