@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
+using System.Threading;
 
 namespace TAuthorization
 {
@@ -19,14 +21,14 @@ namespace TAuthorization
             return _dataStore.Query();
         }
 
-        public virtual IQueryable<EntityPermission> Query(string actionCategory, string actionName)
+        public virtual IQueryable<EntityPermission> Query(string actionName)
         {
-            return Query().Where(ep => ep.ActionCategory == actionCategory && ep.ActionName == actionName);
+            return Query().Where(ep => ep.ActionName == actionName);
         }
 
-        public virtual IEnumerable<EntityPermission<TActionParamsType>> Query<TActionParamsType>(string actionCategory, string actionName) where TActionParamsType : new()
+        public virtual IEnumerable<EntityPermission<TActionParamsType>> Query<TActionParamsType>(string actionName) where TActionParamsType : new()
         {
-            var entityPermisions = Query(actionCategory, actionName).ToList();
+            var entityPermisions = Query(actionName).ToList();
             var result = new List<EntityPermission<TActionParamsType>>();
 
             var type = typeof(TActionParamsType);
@@ -38,7 +40,6 @@ namespace TAuthorization
                     EntityId = entityPermission.EntityId,
                     Id = entityPermission.Id,
                     ActionName = entityPermission.ActionName,
-                    ActionCategory = entityPermission.ActionCategory,
                     RoleName = entityPermission.RoleName,
                     Permission = entityPermission.Permission,
                     ActionParameters = new TActionParamsType()
@@ -54,22 +55,32 @@ namespace TAuthorization
             return result;
         }
 
-        public virtual EntityPermission GrantAccess(string actionCategory, string actionName, string roleName)
+        public virtual IEnumerable<EntityPermission> GetUserPermissions(string username)
         {
-            return GrantAccess(actionCategory, actionName, roleName, Guid.Empty);
+            var result = new List<EntityPermission>();
+            var claims = ((ClaimsPrincipal)Thread.CurrentPrincipal).Claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+            foreach (var claim in claims)
+            {
+                result.AddRange(Query().Where(ep => ep.RoleName == claim.Value).ToList());
+            }
+            return result;
         }
 
-        public virtual EntityPermission GrantAccess(string actionCategory, string actionName, string roleName, Guid entityId)
+        //public virtual Permission GetUserPermission(string username, string action, string entityId = null)
+        //{
+        //    var claims = ((ClaimsPrincipal)Thread.CurrentPrincipal).Claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+        //}
+
+        public virtual EntityPermission GrantAccess(string actionName, string roleName, Guid entityId)
         {
             EntityPermission entityPermission =
-                Query().SingleOrDefault(ep => ep.ActionName == actionName && ep.ActionCategory == actionCategory &&
+                Query().SingleOrDefault(ep => ep.ActionName == actionName &&
                                               ep.RoleName == roleName && ep.EntityId == entityId);
             if (entityPermission == null)
             {
                 var ep = new EntityPermission
                 {
                     ActionName = actionName,
-                    ActionCategory = actionCategory,
                     EntityId = entityId,
                     RoleName = roleName,
                     Permission = Permission.Grant
@@ -87,22 +98,26 @@ namespace TAuthorization
             return entityPermission;
         }
 
-        public virtual EntityPermission GrantAccess<TActionParamsType>(string actionCategory, string actionName, string roleName, TActionParamsType T) where TActionParamsType : new()
+        public virtual EntityPermission GrantAccess(string actionName, string roleName)
         {
-            return GrantAccess(actionCategory, actionName, roleName, Guid.Empty, T);
+            return GrantAccess(actionName, roleName, Guid.Empty);
         }
 
-        public virtual EntityPermission GrantAccess<TActionParamsType>(string actionCategory, string actionName, string roleName, Guid entityId, TActionParamsType T) where TActionParamsType : new()
+        public virtual EntityPermission GrantAccess<TActionParamsType>(string actionName, string roleName, TActionParamsType T) where TActionParamsType : new()
+        {
+            return GrantAccess(actionName, roleName, Guid.Empty, T);
+        }
+
+        public virtual EntityPermission GrantAccess<TActionParamsType>(string actionName, string roleName, Guid entityId, TActionParamsType T) where TActionParamsType : new()
         {
             var entityPermission =
-                Query().SingleOrDefault(ep => ep.ActionName == actionName && ep.ActionCategory == actionCategory &&
+                Query().SingleOrDefault(ep => ep.ActionName == actionName &&
                                               ep.RoleName == roleName && ep.EntityId == entityId);
             if (entityPermission == null)
             {
                 var ep = new EntityPermission
                 {
                     ActionName = actionName,
-                    ActionCategory = actionCategory,
                     EntityId = entityId,
                     RoleName = roleName,
                     Permission = Permission.Grant,
@@ -127,22 +142,21 @@ namespace TAuthorization
             return entityPermission;
         }
 
-        public virtual EntityPermission DenyAccess(string actionCategory, string actionName, string roleName)
+        public virtual EntityPermission DenyAccess(string actionName, string roleName)
         {
-            return DenyAccess(actionCategory, actionName, roleName, Guid.Empty);
+            return DenyAccess(actionName, roleName, Guid.Empty);
         }
 
-        public virtual EntityPermission DenyAccess(string actionCategory, string actionName, string roleName, Guid entityId)
+        public virtual EntityPermission DenyAccess(string actionName, string roleName, Guid entityId)
         {
             var entityPermission =
-                Query().SingleOrDefault(ep => ep.ActionName == actionName && ep.ActionCategory == actionCategory &&
+                Query().SingleOrDefault(ep => ep.ActionName == actionName &&
                                               ep.RoleName == roleName && ep.EntityId == entityId);
             if (entityPermission == null)
             {
                 var ep = new EntityPermission
                 {
                     ActionName = actionName,
-                    ActionCategory = actionCategory,
                     EntityId = entityId,
                     RoleName = roleName,
                     Permission = Permission.Deny
@@ -160,22 +174,21 @@ namespace TAuthorization
             return entityPermission;
         }
 
-        public virtual EntityPermission DenyAccess<TActionParamsType>(string actionCategory, string actionName, string roleName, TActionParamsType T) where TActionParamsType : new()
+        public virtual EntityPermission DenyAccess<TActionParamsType>(string actionName, string roleName, TActionParamsType T) where TActionParamsType : new()
         {
-            return GrantAccess(actionCategory, actionName, roleName, Guid.Empty, T);
+            return GrantAccess(actionName, roleName, Guid.Empty, T);
         }
 
-        public virtual EntityPermission DenyAccess<TActionParamsType>(string actionCategory, string actionName, string roleName, Guid entityId, TActionParamsType T) where TActionParamsType : new()
+        public virtual EntityPermission DenyAccess<TActionParamsType>(string actionName, string roleName, Guid entityId, TActionParamsType T) where TActionParamsType : new()
         {
             var entityPermission =
-                Query().SingleOrDefault(ep => ep.ActionName == actionName && ep.ActionCategory == actionCategory &&
+                Query().SingleOrDefault(ep => ep.ActionName == actionName &&
                                               ep.RoleName == roleName && ep.EntityId == entityId);
             if (entityPermission == null)
             {
                 var ep = new EntityPermission
                 {
                     ActionName = actionName,
-                    ActionCategory = actionCategory,
                     EntityId = entityId,
                     RoleName = roleName,
                     Permission = Permission.Deny,
