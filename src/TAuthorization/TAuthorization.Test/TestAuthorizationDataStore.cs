@@ -40,7 +40,6 @@ namespace TAuthorization.Test
             {
                 permission.EntityId = entityPermission.EntityId;
                 permission.ActionName = entityPermission.ActionName;
-                permission.ActionCategory = entityPermission.ActionCategory;
                 permission.RoleName = entityPermission.RoleName;
                 permission.Permission = entityPermission.Permission;
             }

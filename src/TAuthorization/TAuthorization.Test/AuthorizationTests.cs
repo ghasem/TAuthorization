@@ -20,12 +20,12 @@ namespace TAuthorization.Test
         public void CanGrantAccessForAnAction()
         {
             var authorization = new Authorization(_store);
-            authorization.GrantAccess("ActionCategory", "ActionName", "RoleName");
+            authorization.GrantAccess("ActionName", "RoleName");
             var permission =
                 authorization.Query()
                     .SingleOrDefault(
                         ep =>
-                            ep.ActionName == "ActionName" && ep.ActionCategory == "ActionCategory" &&
+                            ep.ActionName == "ActionName" &&
                             ep.RoleName == "RoleName");
 
             if (permission != null) Assert.AreEqual(permission.Permission, Permission.Grant);
@@ -36,8 +36,8 @@ namespace TAuthorization.Test
         {
             var authorization = new Authorization(_store);
             var param1 = new ActionParam1 { P1 = "P1Value", Owner = "OwnerValue" };
-            authorization.GrantAccess("ActionCategory", "ActionName", "RoleName", param1);
-            var permissions = authorization.Query<ActionParam1>("ActionCategory", "ActionName")
+            authorization.GrantAccess("ActionName", "RoleName", param1);
+            var permissions = authorization.Query<ActionParam1>("ActionName")
                  .Where(ep => ep.ActionParameters.P1 == "P1Value" && ep.ActionParameters.Owner == "OwnerValue").ToList();
 
             Assert.AreEqual(permissions[0].ActionParameters.P1, "P1Value");
@@ -48,13 +48,13 @@ namespace TAuthorization.Test
         {
             var authorization = new Authorization(_store);
             var eGuid = Guid.NewGuid();
-            authorization.GrantAccess("ActionCategory", "ActionName", "RoleName", eGuid);
+            authorization.GrantAccess("ActionName", "RoleName", eGuid);
             var permission =
                 authorization.Query()
                     .SingleOrDefault(
                         ep =>
                             ep.EntityId == eGuid && ep.ActionName == "ActionName" &&
-                            ep.ActionCategory == "ActionCategory" && ep.RoleName == "RoleName");
+                            ep.RoleName == "RoleName");
             if (permission != null) Assert.AreEqual(permission.Permission, Permission.Grant);
         }
 
@@ -63,9 +63,9 @@ namespace TAuthorization.Test
         {
             var authorization = new Authorization(_store);
             var eGuid = Guid.NewGuid();
-            var param1 = new ActionParam1 {P1 = "P1Value", Owner = "OwnerValue"};
-            authorization.GrantAccess("ActionCategory", "ActionName", "RoleName", eGuid, param1);
-            var permissions = authorization.Query<ActionParam1>("ActionCategory", "ActionName")
+            var param1 = new ActionParam1 { P1 = "P1Value", Owner = "OwnerValue" };
+            authorization.GrantAccess("ActionName", "RoleName", eGuid, param1);
+            var permissions = authorization.Query<ActionParam1>("ActionName")
                 .Where(
                     ep =>
                         ep.EntityId == eGuid && ep.ActionParameters.P1 == "P1Value" &&
@@ -77,12 +77,12 @@ namespace TAuthorization.Test
         public void CanDenyAccessForAnAction()
         {
             var authorization = new Authorization(_store);
-            authorization.DenyAccess("ActionCategory", "ActionName", "RoleName");
+            authorization.DenyAccess("ActionName", "RoleName");
             var permission =
                  authorization.Query()
                      .SingleOrDefault(
                          ep =>
-                             ep.ActionName == "ActionName" && ep.ActionCategory == "ActionCategory" &&
+                             ep.ActionName == "ActionName" &&
                              ep.RoleName == "RoleName");
             if (permission != null) Assert.AreEqual(permission.Permission, Permission.Deny);
         }
@@ -92,8 +92,8 @@ namespace TAuthorization.Test
         {
             var authorization = new Authorization(_store);
             var param1 = new ActionParam1 { P1 = "P1Value", Owner = "OwnerValue" };
-            authorization.DenyAccess("ActionCategory", "ActionName", "RoleName", param1);
-            var permissions = authorization.Query<ActionParam1>("ActionCategory", "ActionName")
+            authorization.DenyAccess("ActionName", "RoleName", param1);
+            var permissions = authorization.Query<ActionParam1>("ActionName")
                  .Where(ep => ep.ActionParameters.P1 == "P1Value" && ep.ActionParameters.Owner == "OwnerValue").ToList();
 
             Assert.AreEqual(permissions[0].ActionParameters.P1, "P1Value");
@@ -104,13 +104,13 @@ namespace TAuthorization.Test
         {
             var authorization = new Authorization(_store);
             var eGuid = Guid.NewGuid();
-            authorization.DenyAccess("ActionCategory", "ActionName", "RoleName", eGuid);
+            authorization.DenyAccess("ActionName", "RoleName", eGuid);
             var permission =
                 authorization.Query()
                     .SingleOrDefault(
                         ep =>
                             ep.EntityId == eGuid && ep.ActionName == "ActionName" &&
-                            ep.ActionCategory == "ActionCategory" && ep.RoleName == "RoleName");
+                            ep.RoleName == "RoleName");
             if (permission != null) Assert.AreEqual(permission.Permission, Permission.Deny);
         }
 
@@ -120,8 +120,8 @@ namespace TAuthorization.Test
             var authorization = new Authorization(_store);
             var eGuid = Guid.NewGuid();
             var param1 = new ActionParam1 { P1 = "P1Value", Owner = "OwnerValue" };
-            authorization.DenyAccess("ActionCategory", "ActionName", "RoleName", eGuid, param1);
-            var permissions = authorization.Query<ActionParam1>("ActionCategory", "ActionName")
+            authorization.DenyAccess("ActionName", "RoleName", eGuid, param1);
+            var permissions = authorization.Query<ActionParam1>("ActionName")
                 .Where(
                     ep =>
                         ep.EntityId == eGuid && ep.ActionParameters.P1 == "P1Value" &&
@@ -135,8 +135,8 @@ namespace TAuthorization.Test
         public void CanQueryOnEntityPermissionsWithEntityId()
         {
             var authorization = new Authorization(_store);
-            var eGuid = Guid.NewGuid();           
-            authorization.GrantAccess("ActionCategory", "ActionName", "RoleName", eGuid);
+            var eGuid = Guid.NewGuid();
+            authorization.GrantAccess("ActionName", "RoleName", eGuid);
 
             var permission = authorization.Query().SingleOrDefault(ep => ep.EntityId == eGuid);
             if (permission != null) Assert.AreEqual((object)permission.EntityId, eGuid);
@@ -147,11 +147,11 @@ namespace TAuthorization.Test
         {
             var authorization = new Authorization(_store);
             var eGuid = Guid.NewGuid();
-            authorization.GrantAccess("ActionCategory", "ActionName", "RoleName", eGuid);
+            authorization.GrantAccess("ActionName", "RoleName", eGuid);
 
             var permission =
                 authorization.Query()
-                    .SingleOrDefault(ep => ep.ActionName == "ActionName" && ep.ActionCategory == "ActionCategory" &&
+                    .SingleOrDefault(ep => ep.ActionName == "ActionName" &&
                                            ep.RoleName == "RoleName");
             if (permission != null) Assert.AreEqual((object)permission.EntityId, eGuid);
         }
@@ -159,11 +159,11 @@ namespace TAuthorization.Test
         [TestMethod]
         public void CanQueryOnEntityPermissionsWithActionParameters()
         {
-           var authorization = new Authorization(_store);
-           var param1 = new ActionParam1 { P1 = "P1Value", Owner = "OwnerValue" };
-           authorization.GrantAccess("ActionCategory", "ActionName", "RoleName", param1);
+            var authorization = new Authorization(_store);
+            var param1 = new ActionParam1 { P1 = "P1Value", Owner = "OwnerValue" };
+            authorization.GrantAccess("ActionName", "RoleName", param1);
 
-            var permissions = authorization.Query<ActionParam1>("ActionCategory", "ActionName")
+            var permissions = authorization.Query<ActionParam1>("ActionName")
                 .Where(ep => ep.ActionParameters.P1 == "P1Value" && ep.ActionParameters.Owner == "OwnerValue").ToList();
             Assert.AreEqual(permissions[0].ActionParameters.P1, "P1Value");
         }
@@ -172,11 +172,11 @@ namespace TAuthorization.Test
         public void CanClearPermissionsForAnAction()
         {
             var authorization = new Authorization(_store);
-            //authorization.ClearPermissions("ActionCategory", "ActionName");
-            authorization.ClearPermissions(ep => ep.ActionName == "ActioName" && ep.ActionCategory == "ActionCategory");
+            //authorization.ClearPermissions("ActionName");
+            authorization.ClearPermissions(ep => ep.ActionName == "ActioName");
             var permissionCount =
                 authorization.Query()
-                    .Count(ep => ep.ActionName == "ActionName" && ep.ActionCategory == "ActionCategory");
+                    .Count(ep => ep.ActionName == "ActionName");
             Assert.AreEqual(permissionCount, 0);
         }
 
@@ -196,12 +196,12 @@ namespace TAuthorization.Test
             var authorization = new Authorization(_store);
             var eGuid = Guid.NewGuid();
             authorization.ClearPermissions(
-                ep => ep.ActionName == "ActioName" && ep.ActionCategory == "ActionCategory" && ep.EntityId == eGuid);
+                ep => ep.ActionName == "ActioName" && ep.EntityId == eGuid);
             var permissionCount =
                 authorization.Query()
                     .Count(
                         ep =>
-                            ep.ActionName == "ActionName" && ep.ActionCategory == "ActionCategory" &&
+                            ep.ActionName == "ActionName" &&
                             ep.EntityId == eGuid);
             Assert.AreEqual(permissionCount, 0);
         }
@@ -210,12 +210,10 @@ namespace TAuthorization.Test
         public void CanQueryOverPermissionsForUser()
         {
             var authorization = new Authorization(_store);
-            //((ClaimsPrincipal)Thread.CurrentPrincipal)
-            Claim
-            authorization.GrantAccess("ActionCategory", "ActionName", "role1");
+            authorization.GrantAccess("ActionName", "role1");
             var permissions = authorization.GetUserPermissions("Username")
-                .Where(ep => ep.ActionName == "ActionName" && ep.ActionCategory == "ActionCategory");
-
+                .Where(ep => ep.ActionName == "ActionName").ToList();
+            Assert.IsTrue(permissions.Any(ep => ep.RoleName == "role1" && ep.Permission == Permission.Grant));
         }
     }
 
