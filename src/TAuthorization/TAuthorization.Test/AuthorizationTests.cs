@@ -221,7 +221,7 @@ namespace TAuthorization.Test
         {
             var authorization = new Authorization(_store, ClaimsProvider);
             authorization.GrantAccess("Action", "RoleName");
-            var perm = authorization.GetPermission("Action", null, Thread.CurrentPrincipal.Identity.Name);
+            var perm = authorization.GetPermission("Action", Thread.CurrentPrincipal.Identity.Name);
             Assert.AreEqual(Permission.Grant, perm);
         }
 

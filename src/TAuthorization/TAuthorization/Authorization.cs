@@ -23,15 +23,15 @@ namespace TAuthorization
             return _dataStore.Query();
         }
 
-        public virtual Permission GetPermission(string action, string entityId = null, string username = null)
+        public virtual Permission GetPermission(string action, string username = null, string entityId = null)
         {
             var q = Query().Where(ep => ep.Action == action);
             var roles = (username != null) ? _claimsProvider(username).Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList() :
                 _claimsProvider(Thread.CurrentPrincipal.Identity.Name).Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-            q = q.Where(ep => roles.Contains(ep.RoleName) && ep.EntityId == entityId);
-            if (!q.Any())
+            var res = q.Where(ep => roles.Contains(ep.RoleName) && ep.EntityId == entityId).ToList();
+            if (!res.Any())
                 return Permission.None;
-            return q.Any(ep => ep.Permission == Permission.Grant) ? Permission.Grant : Permission.Deny;
+            return res.Any(ep => ep.Permission == Permission.Grant) ? Permission.Grant : Permission.Deny;
         }
 
         //public virtual IQueryable<EntityPermission> Query(string actionName)
