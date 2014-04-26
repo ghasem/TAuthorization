@@ -26,19 +26,10 @@ namespace TAuthorization
         public virtual Permission GetPermission(string action, string entityId = null, string username = null)
         {
             var q = Query().Where(ep => ep.Action == action);
-            if (username != null)
-            {
-                var roles = _claimsProvider(username).Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-                q = q.Where(ep => roles.Contains(ep.RoleName));
-            }
-            if (entityId != null)
-            {
-                q = q.Where(ep => ep.EntityId == entityId);
-            }
-            var res = q.SingleOrDefault();
-            if (res == null)
-                return Permission.None;
-            return res.Permission;
+            var roles = (username != null) ? _claimsProvider(username).Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList() :
+                _claimsProvider(Thread.CurrentPrincipal.Identity.Name).Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+            q = q.Where(ep => roles.Contains(ep.RoleName) && ep.EntityId == entityId);
+            return q.Any(ep => ep.Permission == Permission.Grant) ? Permission.Grant : Permission.Deny;
         }
 
         //public virtual IQueryable<EntityPermission> Query(string actionName)
