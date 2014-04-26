@@ -27,7 +27,7 @@ namespace TAuthorization.Test
 
         public void Insert(EntityPermission ep)
         {
-            if (_entityPermissions.Any(e => e.Action == ep.Action && e.Id == ep.Id))
+            if (_entityPermissions.Any(e => e.Action == ep.Action && e.RoleName == ep.RoleName && e.Id == ep.Id))
                 throw new InvalidOperationException("Duplicate EntityPermission.");
             _entityPermissions.Add(ep);
         }

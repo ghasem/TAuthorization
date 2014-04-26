@@ -20,7 +20,7 @@ namespace TAuthorization.Test
         {
             if (username.ToLower() == Thread.CurrentPrincipal.Identity.Name.ToLower())
             {
-                return new Claim[] { new Claim(ClaimTypes.Role, "RoleName") };
+                return new Claim[] { new Claim(ClaimTypes.Role, "RoleName"), new Claim(ClaimTypes.Role, "RoleName3") };
             }
             else
             {
@@ -230,10 +230,40 @@ namespace TAuthorization.Test
         {
             var authorization = new Authorization(_store, ClaimsProvider);
             authorization.GrantAccess("Action", "RoleName");
+            authorization.GrantAccess("Action", "RoleName2");
             var perm = authorization.GetPermission("Action");
             Assert.AreEqual(Permission.Grant, perm);
         }
 
+        [TestMethod]
+        public void ReturnsNonePermissionForCaseThatThereAreNotAnyPermissionsForUser()
+        {
+            var authorization = new Authorization(_store, ClaimsProvider);
+            authorization.GrantAccess("Action", "RoleName");
+            authorization.GrantAccess("Action", "RoleName3");
+            var perm = authorization.GetPermission("Action1");
+            Assert.AreEqual(Permission.None, perm);
+        }
+
+        [TestMethod]
+        public void ReturnsDenyForCaseThatThereAreJustDenyInPermissionsForUser()
+        {
+            var authorization = new Authorization(_store, ClaimsProvider);
+            authorization.DenyAccess("Action", "RoleName");
+            authorization.DenyAccess("Action", "RoleName3");
+            var perm = authorization.GetPermission("Action");
+            Assert.AreEqual(Permission.Deny, perm);
+        }
+
+        [TestMethod]
+        public void ReturnsGrantForCaseThatThereAreAtLeastOneGrantInPermissionsForUser()
+        {
+            var authorization = new Authorization(_store, ClaimsProvider);
+            authorization.GrantAccess("Action", "RoleName");
+            authorization.DenyAccess("Action", "RoleName3");
+            var perm = authorization.GetPermission("Action");
+            Assert.AreEqual(Permission.Grant, perm);
+        }
         //[TestMethod]
         //public void CanQueryOverPermissionsForUser()
         //{

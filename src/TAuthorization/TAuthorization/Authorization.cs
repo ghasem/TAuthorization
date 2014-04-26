@@ -29,6 +29,8 @@ namespace TAuthorization
             var roles = (username != null) ? _claimsProvider(username).Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList() :
                 _claimsProvider(Thread.CurrentPrincipal.Identity.Name).Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
             q = q.Where(ep => roles.Contains(ep.RoleName) && ep.EntityId == entityId);
+            if (!q.Any())
+                return Permission.None;
             return q.Any(ep => ep.Permission == Permission.Grant) ? Permission.Grant : Permission.Deny;
         }
 
