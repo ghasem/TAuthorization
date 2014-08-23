@@ -10,12 +10,12 @@ namespace TAuthorization
     public class Authorization
     {
         private IAuthorizationDataStore _dataStore;
-        private Func<string, IList<Claim>> _claimsProvider;
+        private Func<string, IEnumerable<string>> _rolesProvider;
 
-        public Authorization(IAuthorizationDataStore dataStore, Func<string, IList<Claim>> claimsProvider)
+        public Authorization(IAuthorizationDataStore dataStore, Func<string, IEnumerable<string>> rolesProvider)
         {
             _dataStore = dataStore;
-            _claimsProvider = claimsProvider;
+            _rolesProvider = rolesProvider;
         }
 
         public virtual IQueryable<EntityPermission> Query()
@@ -26,12 +26,11 @@ namespace TAuthorization
         public virtual Permission GetPermission(string action, string entityId = null, string username = null)
         {
             var q = Query().Where(ep => ep.Action == action);
-            var roles = (username != null) ? _claimsProvider(username).Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList() :
-                _claimsProvider(Thread.CurrentPrincipal.Identity.Name).Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-            q = q.Where(ep => roles.Contains(ep.RoleName) && ep.EntityId == entityId);
-            if (!q.Any())
+            var roles = (username != null) ? _rolesProvider(username) : _rolesProvider(Thread.CurrentPrincipal.Identity.Name).ToList();
+            var res = q.Where(ep => roles.Contains(ep.RoleName) && ep.EntityId == entityId).ToList();
+            if (!res.Any())
                 return Permission.None;
-            return q.Any(ep => ep.Permission == Permission.Grant) ? Permission.Grant : Permission.Deny;
+            return res.Any(ep => ep.Permission == Permission.Grant) ? Permission.Grant : Permission.Deny;
         }
 
         //public virtual IQueryable<EntityPermission> Query(string actionName)
@@ -44,7 +43,7 @@ namespace TAuthorization
             var entityPermisions = Query().Where(ep => ep.Action == action);
             if (username != null)
             {
-                var roles = _claimsProvider(username).Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+                var roles = _rolesProvider(username).ToList();
                 entityPermisions = entityPermisions.Where(ep => roles.Contains(ep.RoleName));
             }
             var result = new List<EntityPermission<TActionParamsType>>();
