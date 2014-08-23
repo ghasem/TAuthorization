@@ -23,7 +23,7 @@ namespace TAuthorization
             return _dataStore.Query();
         }
 
-        public virtual Permission GetPermission(string action, string entityId = null, string username = null)
+        public virtual Permission GetPermission(string action, string username = null, string entityId = null)
         {
             var q = Query().Where(ep => ep.Action == action);
             var roles = (username != null) ? _rolesProvider(username) : _rolesProvider(Thread.CurrentPrincipal.Identity.Name).ToList();
@@ -214,7 +214,5 @@ namespace TAuthorization
             var entityPermissions = _dataStore.Query().Where(predicate).ToList();
             _dataStore.Delete(entityPermissions);
         }
-
-
     }
 }
