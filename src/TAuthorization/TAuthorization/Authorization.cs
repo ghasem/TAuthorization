@@ -26,7 +26,7 @@ namespace TAuthorization
         public virtual Permission GetPermission(string action, string username = null, string entityId = null)
         {
             var q = Query().Where(ep => ep.Action == action);
-            var roles = (username != null) ? _rolesProvider(username) : _rolesProvider(Thread.CurrentPrincipal.Identity.Name).ToList();
+            var roles = (username != null) ? _rolesProvider(username).ToList() : _rolesProvider(Thread.CurrentPrincipal.Identity.Name).ToList();
             var res = q.Where(ep => roles.Contains(ep.RoleName) && ep.EntityId == entityId).ToList();
             if (!res.Any())
                 return Permission.None;
