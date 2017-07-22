@@ -33,17 +33,28 @@ namespace TAuthorization
             return res.Any(ep => ep.Permission == Permission.Grant) ? Permission.Grant : Permission.Deny;
         }
 
+        public virtual Permission GetPermissionByUserId(string action, string userid, string entityId = null)
+        {
+            var q = Query().Where(ep => ep.Action == action);
+            var roles = _rolesProvider(userid).ToList();
+            var res = q.Where(ep => roles.Contains(ep.RoleName) && ep.EntityId == entityId).ToList();
+            if (!res.Any())
+                return Permission.None;
+            return res.Any(ep => ep.Permission == Permission.Grant) ? Permission.Grant : Permission.Deny;
+        }
+
+
         //public virtual IQueryable<EntityPermission> Query(string actionName)
         //{
         //    return Query().Where(ep => ep.ActionName == actionName);
         //}
 
-        public virtual IEnumerable<EntityPermission<TActionParamsType>> Query<TActionParamsType>(string action, string username = null) where TActionParamsType : new()
+        public virtual IEnumerable<EntityPermission<TActionParamsType>> Query<TActionParamsType>(string action, string userid = null) where TActionParamsType : new()
         {
             var entityPermisions = Query().Where(ep => ep.Action == action);
-            if (username != null)
+            if (userid != null)
             {
-                var roles = _rolesProvider(username).ToList();
+                var roles = _rolesProvider(userid).ToList();
                 entityPermisions = entityPermisions.Where(ep => roles.Contains(ep.RoleName));
             }
             var result = new List<EntityPermission<TActionParamsType>>();
@@ -71,6 +82,40 @@ namespace TAuthorization
             }
             return result;
         }
+
+        //public virtual IEnumerable<EntityPermission<TActionParamsType>> Query<TActionParamsType>(string action, string username = null) where TActionParamsType : new()
+        //{
+        //    var entityPermisions = Query().Where(ep => ep.Action == action);
+        //    if (username != null)
+        //    {
+        //        var roles = _rolesProvider(username).ToList();
+        //        entityPermisions = entityPermisions.Where(ep => roles.Contains(ep.RoleName));
+        //    }
+        //    var result = new List<EntityPermission<TActionParamsType>>();
+
+        //    var type = typeof(TActionParamsType);
+
+        //    foreach (var entityPermission in entityPermisions)
+        //    {
+        //        var permsStr = new EntityPermission<TActionParamsType>
+        //        {
+        //            EntityId = entityPermission.EntityId,
+        //            Id = entityPermission.Id,
+        //            Action = entityPermission.Action,
+        //            RoleName = entityPermission.RoleName,
+        //            Permission = entityPermission.Permission,
+        //            ActionParameters = new TActionParamsType()
+        //        };
+        //        foreach (var rawActionParam in entityPermission.RawActionParams)
+        //        {
+        //            var prop = type.GetProperty(rawActionParam.Key);
+        //            if (null != prop && prop.CanWrite)
+        //                prop.SetValue(permsStr.ActionParameters, rawActionParam.Value);
+        //        }
+        //        result.Add(permsStr);
+        //    }
+        //    return result;
+        //}
 
         public virtual void GrantAccess(string actionName, string roleName, string entityId)
         {
