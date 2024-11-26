@@ -10,11 +10,13 @@ namespace TAuthorization
     public class Authorization
     {
         private IAuthorizationDataStore _dataStore;
+        private readonly IServiceAuthorizationDataStore serviceAuthorizationDataStore;
         private Func<string, IEnumerable<string>> _rolesProvider;
 
-        public Authorization(IAuthorizationDataStore dataStore, Func<string, IEnumerable<string>> rolesProvider)
+        public Authorization(IAuthorizationDataStore dataStore,IServiceAuthorizationDataStore serviceAuthorizationDataStore, Func<string, IEnumerable<string>> rolesProvider)
         {
             _dataStore = dataStore;
+            this.serviceAuthorizationDataStore = serviceAuthorizationDataStore;
             _rolesProvider = rolesProvider;
         }
 
@@ -43,6 +45,19 @@ namespace TAuthorization
             return res.Any(ep => ep.Permission == Permission.Grant) ? Permission.Grant : Permission.Deny;
         }
 
+        public virtual Permission GetServicePermissionByUserId(string action, string userid)
+        {
+            var q = GetEntityServicePermissionByUserId(action, userid);
+            if (q == null)
+                return Permission.None;
+
+            return q.Permission;
+        }
+
+        public virtual EntityServicePermission GetEntityServicePermissionByUserId(string action, string userid)
+        {
+            return serviceAuthorizationDataStore.Query().FirstOrDefault(ep => ep.Action == action && ep.UserId == userid);           
+        }
 
         //public virtual IQueryable<EntityPermission> Query(string actionName)
         //{
@@ -258,6 +273,36 @@ namespace TAuthorization
         {
             var entityPermissions = _dataStore.Query().Where(predicate).ToList();
             _dataStore.Delete(entityPermissions);
+        }
+
+        public virtual void HandleWebServicePermission(EntityServicePermission entityServicePermission)
+        {
+            EntityServicePermission permission = null;
+
+            if (entityServicePermission.Id != Guid.Empty)
+                permission = this.serviceAuthorizationDataStore.Query().FirstOrDefault(i => i.UserId == entityServicePermission.UserId &&
+                                                                        i.Action == entityServicePermission.Action);
+
+            switch (entityServicePermission.Permission)
+            {
+                case Permission.None:
+                    if (permission != null)
+                        this.serviceAuthorizationDataStore.Delete(new List<EntityServicePermission> { permission });
+                    break;
+
+                case Permission.Deny:
+                case Permission.Grant:
+
+                    if (permission == null)
+                        this.serviceAuthorizationDataStore.Insert(entityServicePermission);
+                    else
+                        this.serviceAuthorizationDataStore.Insert(entityServicePermission);
+
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }
