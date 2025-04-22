@@ -44,7 +44,17 @@ namespace TAuthorization
                 return Permission.None;
             return res.Any(ep => ep.Permission == Permission.Grant) ? Permission.Grant : Permission.Deny;
         }
+        public virtual Permission GetDetailPermissionByUserId(string action, string detailCode, string userid, string entityId = null)
+        {
 
+            var queue = Query().Where(ep => ep.Action.Contains(action + ":" + detailCode)).ToList();
+            var roles = _rolesProvider(userid).ToList();
+            var res = queue.Where(ep => roles.Contains(ep.RoleName) && ep.EntityId == entityId).ToList();
+            if (!res.Any())
+                return Permission.None;
+            return res.Any(ep => ep.Permission == Permission.Grant) ? Permission.Grant : Permission.Deny;
+
+        }
         public virtual Permission GetServicePermissionByUserId(string action, string userid)
         {
             var q = GetEntityServicePermissionByUserId(action, userid);

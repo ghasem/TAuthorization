@@ -12,7 +12,7 @@ namespace TAuthorization
         public virtual string Action { get; set; }
         public virtual string RoleName { get; set; }
         public virtual Permission Permission { get; set; }
-
+        public virtual List<object> Details { get; set; }
         public virtual Dictionary<string, string> RawActionParams
         {
             get { return _rawActionParams; }
