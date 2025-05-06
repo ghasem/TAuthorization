@@ -84,21 +84,6 @@
     <Compile Include="Permission.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\Default.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\UnAuthorized.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Layout\_Main.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Shared\_AceBlank.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\web.config" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
