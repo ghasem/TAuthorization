@@ -73,7 +73,12 @@ namespace TAuthorization
         //{
         //    return Query().Where(ep => ep.ActionName == actionName);
         //}
-
+        public virtual EntityPermission FindPermissions(Func<EntityPermission, bool> predicate)
+        {
+            var result = _dataStore.Query().Where(predicate).ToList();
+            var firstResult = result.FirstOrDefault();
+            return firstResult;
+        }
         public virtual IEnumerable<EntityPermission<TActionParamsType>> Query<TActionParamsType>(string action, string userid = null) where TActionParamsType : new()
         {
             var entityPermisions = Query().Where(ep => ep.Action == action);
