@@ -12,6 +12,8 @@ namespace TAuthorization
         public virtual string Action { get; set; }
         public virtual string ActionTitle { get; set; }
         public virtual string RoleName { get; set; }
+        public virtual string CategoryCode { get; set; }
+        public virtual string CategoryTitle { get; set; }
         public virtual Permission Permission { get; set; }
         public virtual List<object> Details { get; set; }
         public virtual Dictionary<string, string> RawActionParams
@@ -25,7 +27,13 @@ namespace TAuthorization
     {
         public TActionParamsType ActionParameters { get; set; }
     }
+    public class BatchEntityPermission
+    {
 
+        public virtual string Category { get; set; }
+        public virtual EntityPermission[] EntityPermissions { get; set; }
+
+    }
     public class EntityServicePermission
     {
         private Dictionary<string, string> _rawActionParams = new Dictionary<string, string>();
