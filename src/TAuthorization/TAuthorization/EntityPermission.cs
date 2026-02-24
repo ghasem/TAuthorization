@@ -9,6 +9,7 @@ namespace TAuthorization
 
         public virtual Guid Id { get; set; }
         public virtual string EntityId { get; set; }
+        public virtual string EntityTitle { get; set; }
         public virtual string Action { get; set; }
         public virtual string ActionTitle { get; set; }
         public virtual string RoleName { get; set; }
